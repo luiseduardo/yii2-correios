@@ -85,11 +85,11 @@ class CepAction extends \yii\base\Action
                     list($city, $state) = explode('/', $cols->item(2)->nodeValue);
 
                     $result[] = [
-                        'location' => $cols->item(0)->nodeValue,
-                        'district' => $cols->item(1)->nodeValue,
-                        'city' => $city,
-                        'state' => $state,
-                        'cep' => $cols->item(3)->nodeValue,
+                        'location' => preg_replace('/[^A-Za-z0-9\.\-\,\s+\/]/', '', $cols->item(0)->nodeValue),
+                        'district' => preg_replace('/[^A-Za-z0-9\.\-\,]/', '', $cols->item(1)->nodeValue),
+                        'city' => preg_replace('/[^A-Za-z]/', '', $city),
+                        'state' => preg_replace('/[^A-Za-z]/', '', $state),
+                        'cep' => preg_replace('/[^0-9\-]/', '', $cols->item(3)->nodeValue),
                     ];
                 }
             }
