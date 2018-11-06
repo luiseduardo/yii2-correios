@@ -1,6 +1,6 @@
 <?php
 
-namespace yiibr\correios;
+namespace luiseduardo\correios;
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;

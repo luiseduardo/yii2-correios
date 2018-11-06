@@ -1,6 +1,6 @@
 <?php
 
-namespace yiibr\correios;
+namespace luiseduardo\correios;
 
 use DOMDocument;
 use Yii;

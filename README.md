@@ -15,7 +15,7 @@ This extension allows automatic completion and search Brazilian address.
 Add to the ```require``` section of your `composer.json` file:
 
 ```
-"yiibr/yii2-correios": "*"
+"luiseduardo/yii2-correios": "*"
 ```
 
 
@@ -28,7 +28,7 @@ public function actions()
 {
     return [
         ...
-        'addressSearch' => 'yiibr\correios\CepAction'
+        'addressSearch' => 'luiseduardo\correios\CepAction'
         ...
     ];
 }
@@ -42,7 +42,7 @@ On your view file.
 ```php
 
 <?php
-use yiibr\correios\CepInput;
+use luiseduardo\correios\CepInput;
 ?>
 
 ...
@@ -64,7 +64,7 @@ use yiibr\correios\CepInput;
 
 // Example:
 
-<?= $form->field($model, 'cep',)->widget('yiibr\correios\CepInput', [
+<?= $form->field($model, 'cep',)->widget('luiseduardo\correios\CepInput', [
     'action' => ['addressSearch'],
     'fields' => [
         'location' => 'address-location',
