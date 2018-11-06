@@ -21,6 +21,6 @@
         "yiisoft/yii2": "*"
     },
     "autoload": {
-        "psr-4": { "yiibr\\correios\\": "" }
+        "psr-4": { "luiseduardo\\correios\\": "" }
     }
 }
