@@ -1,8 +1,8 @@
 {
-    "name": "yiibr/yii2-correios",
+    "name": "luiseduardo/yii2-correios",
     "description": "Locates an address in Brazil by postal code",
     "keywords": ["yii2", "extension", "correios"],
-    "homepage": "https://github.com/yiibr/yii2-correios",
+    "homepage": "https://github.com/luiseduardo/yii2-correios",
     "type": "yii2-extension",
     "license": "BSD 3-Clause",
     "authors": [
@@ -13,8 +13,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/yiibr/yii2-correios/issues?state=open",
-        "source": "https://github.com/yiibr/yii2-correios"
+        "issues": "https://github.com/luiseduardo/yii2-correios/issues?state=open",
+        "source": "https://github.com/luiseduardo/yii2-correios"
     },
     "minimum-stability": "dev",
     "require": {
