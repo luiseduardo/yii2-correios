@@ -1,7 +1,7 @@
 {
     "name": "luiseduardo/yii2-correios",
     "description": "Locates an address in Brazil by postal code",
-    "keywords": ["yii2", "extension", "correios"],
+    "keywords": ["yii2", "extension", "correios", "viacep"],
     "homepage": "https://github.com/luiseduardo/yii2-correios",
     "type": "yii2-extension",
     "license": "BSD 3-Clause",
