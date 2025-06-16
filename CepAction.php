@@ -11,29 +11,12 @@ use yii\web\Response;
 class CepAction extends \yii\base\Action
 
 {
-    const URL_CORREIOS = 'http://www.buscacep.correios.com.br/sistemas/buscacep/resultadoBuscaCepEndereco.cfm';
-
-    /**
-     * @var array data sent in request
-     */
-    public $formData = [];
+    const URL_VIACEP = 'https://viacep.com.br/ws/';
 
     /**
      * @var string name of query parameter
      */
     public $queryParam = '_cep';
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        $this->formData = array_merge([
-            'semelhante' => 'N',
-            'tipoCEP' => 'ALL',
-            'tipoConsulta' => 'relaxation'
-        ], $this->formData);
-    }
 
     /**
      * Searches address by cep or location
@@ -61,40 +44,63 @@ class CepAction extends \yii\base\Action
     protected function search($q)
     {
         $result = [];
-        $fields = array_merge([$this->formData['tipoConsulta'] => $q], $this->formData);
 
-        $curl = curl_init(self::URL_CORREIOS);
+        // somente números, vamos pesquisar por cep
+        if (preg_match('/^\d+$/', $q)) {
+            $url = "{$q}/json/";
+        } else {
+            // vamos pesquisar por endereço
+
+            $q = str_replace('RUA', '', mb_strtoupper($q));
+
+            // Quebrar em partes
+            $partes = explode(',', $q);
+
+            // Remover espaços e codificar cada parte
+            $partesLimpas = array_map(function ($parte) {
+                return urlencode(trim($parte));
+            }, $partes);
+
+            $endereco = $partesLimpas[0];
+            $cidade = $partesLimpas[1];
+            $estado = $partesLimpas[2];
+
+            $url = "$estado/$cidade/" . urlencode($endereco) . '/json';
+        }
+
+        $curl = curl_init(self::URL_VIACEP . $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HEADER, 0);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($fields));
 
         $response = curl_exec($curl);
         curl_close($curl);
 
-        static $pattern = '/<table class="tmptabela">(.*?)<\/table>/is';
-        if (preg_match($pattern, $response, $matches)) {
-            $html = new DOMDocument();
-            if ($html->loadHTML($matches[0])) {
-                $rows = $html->getElementsByTagName('tr');
+        $result = json_decode($response);
 
-                $header = $rows->item(0);
-                $header->parentNode->removeChild($header);
+        if (is_array($result)) {
 
-                foreach ($rows as $tr) {
-                    $cols = $tr->getElementsByTagName('td');
-                    list($city, $state) = explode('/', $cols->item(2)->nodeValue);
-
-                    $result[] = [
-                        'location' => urldecode(str_replace('%A0', '', str_replace('%C2', '', urlencode($cols->item(0)->nodeValue)))),
-                        'district' => urldecode(str_replace('%A0', '', str_replace('%C2', '', urlencode($cols->item(1)->nodeValue)))),
-                        'city' => urldecode(str_replace('%A0', '', str_replace('%C2', '', urlencode($city)))),
-                        'state' => urldecode(str_replace('%A0', '', str_replace('%C2', '', urlencode($state)))),
-                        'cep' => urldecode(str_replace('%A0', '', str_replace('%C2', '', urlencode($cols->item(3)->nodeValue)))),
-                    ];
-                }
+            foreach ($result as $address) {
+                $output[] = [
+                    'location' => ($address->logradouro ?? $endereco ?? ''),
+                    'district' => $address->bairro,
+                    'city' => $address->localidade,
+                    'state' => $address->uf,
+                    'cep' => $address->cep,
+                    'complement' => $address->complemento
+                ];
             }
+        } else {
+            $address = $result;
+            $output[] = [
+                'location' => ($address->logradouro ?? $endereco ?? ''),
+                'district' => $address->bairro,
+                'city' => $address->localidade,
+                'state' => $address->uf,
+                'cep' => $address->cep,
+                'complement' => $address->complemento
+            ];
         }
-        return $result;
-    }
 
+        return $output;
+    }
 }

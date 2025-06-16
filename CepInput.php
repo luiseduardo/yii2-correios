@@ -24,7 +24,7 @@ class CepInput extends InputWidget
     /**
      * @var string the css search icon class
      */
-    public $searchIcon = 'glyphicon glyphicon-search';
+    public $searchIcon = 'fa-solid fa-magnifying-glass';
 
     /**
      * @var array $fields ID of html elements that will receive result of search
@@ -42,6 +42,7 @@ class CepInput extends InputWidget
         'district' => '',
         'city' => '',
         'state' => '',
+        'complement' => ''
     ];
 
     /**
@@ -81,12 +82,12 @@ class CepInput extends InputWidget
      */
     protected function renderSearch($input, $id = null)
     {
-        echo Html::beginTag("div", ['class' => 'input-group cep-search', 'id' => $id]);
+        echo Html::beginTag("div", ['class' => 'input-group cep-search mb-2', 'id' => $id]);
         echo $input;
         echo Html::beginTag("span", ['class' => 'input-group-btn']);
-        echo Html::beginTag("a", ['class' => 'btn btn-default']);
+        echo Html::beginTag("button", ['type' => 'button', 'class' => 'btn btn-default', 'id' => 'btn-modal-search-cep']);
         echo Html::tag("i", null, ['class' => $this->searchIcon]);
-        echo Html::endTag("a");
+        echo Html::endTag("button");
         echo Html::endTag("span");
         echo Html::endTag("div");
     }
@@ -96,13 +97,15 @@ class CepInput extends InputWidget
      */
     protected function renderModal()
     {
-        echo Html::beginTag('div', ['class' => 'fade modal', 'role' => 'dialog', 'tabindex' => '-1']);
+        echo Html::beginTag('div', ['class' => 'modal modal-cep-search', 'role' => 'dialog', 'tabindex' => '-1', 'id' => 'modal-cep-search', 'aria-hidden' => 'true']);
         echo Html::beginTag('div', ['class' => 'modal-dialog modal-lg']);
         echo Html::beginTag('div', ['class' => 'modal-content']);
 
-        echo Html::beginTag('div', ['class' => 'modal-header']);
-        echo Html::button('&times;', ['class' => 'close', 'data-dismiss' => 'modal', 'aria-hidden' => true]);
-        echo "CEP";
+        echo Html::beginTag('div', ['class' => 'modal-header bg-default']);
+        echo Html::beginTag('h5', ['class' => "modal-title"]);
+        echo "Consulta de CEP";
+        echo Html::endTag('h5');
+        echo Html::button('', ['class' => 'btn-close', 'data-bs-dismiss' => 'modal', 'aria-label' => 'close']);
         echo Html::endTag('div');
 
         echo Html::beginTag('div', ['class' => 'modal-body']);
@@ -112,10 +115,6 @@ class CepInput extends InputWidget
         $this->renderSearch($input);
         $this->renderGrid();
 
-        echo Html::endTag('div');
-
-        echo Html::beginTag('div', ['class' => 'modal-footer']);
-        echo Html::button('Fechar', ['class' => 'btn btn-default', 'data-dismiss' => 'modal', 'aria-hidden' => true]);
         echo Html::endTag('div');
 
         echo Html::endTag('div');
@@ -160,4 +159,4 @@ class CepInput extends InputWidget
 
         $this->getView()->registerJs("jQuery('#{$id}').cep($options);");
     }
-} 
+}
